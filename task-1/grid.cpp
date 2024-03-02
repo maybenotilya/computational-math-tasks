@@ -1,9 +1,9 @@
 #include "grid.h"
 
 double** Grid::create_matrix(int N) {
-    double** matrix = new double*[N];
+    double** matrix = new double*[N]{};
     for (int i = 0; i < N; ++i) {
-        matrix[i] = new double[N];
+        matrix[i] = new double[N]{};
     }
     return matrix;
 }
@@ -51,6 +51,6 @@ Grid::Grid(
 ) : N(N), block_size(block_size), eps(eps), u(init_u(N, func_g)), f(init_f(N, func_f)), h(1.0 / (N + 1)) {}
 
 Grid::~Grid() {
-    free_matrix(u, N);
-    free_matrix(f, N);
+    free_matrix(u, N + 2);
+    free_matrix(f, N + 2);
 }
