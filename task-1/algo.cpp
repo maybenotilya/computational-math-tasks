@@ -4,8 +4,8 @@
 
 double process_block(Grid& grid, int block_i, int block_j) {
     double dmax = 0;
-    double** u = grid.u;
-    double** f = grid.f;
+    auto& u = grid.u;
+    auto& f = grid.f;
     for (int i = grid.block_size * block_i; i < grid.block_size * (block_i + 1) && i < grid.N + 2; ++i) {
         // Avoid calculations on border
         if (i == 0 || i == grid.N + 1) {

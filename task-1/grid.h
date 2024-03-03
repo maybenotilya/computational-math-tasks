@@ -1,23 +1,22 @@
 #ifndef GRID_HEADER
 #define GRID_HEADER
 
+#include <vector>
+
+using std::vector;
 
 class Grid {
 private:
-    static double** create_matrix(int N);
+    static vector<vector<double>> init_u(int N, double (*g)(double, double));
 
-    static double** init_u(int N, double (*g)(double, double));
-
-    static double** init_f(int N, double (*f)(double, double));
-
-    static void free_matrix(double** matrix, int N);
+    static vector<vector<double>> init_f(int N, double (*f)(double, double));
 
 public:
     int N;
     int block_size;
     double eps;
-    double** u;
-    double** f;
+    vector<vector<double>> u;
+    vector<vector<double>> f;
     double h;
 
     Grid(
@@ -28,7 +27,7 @@ public:
         double eps
     );
     
-    ~Grid();
+    ~Grid() {};
 };
 
 
