@@ -24,6 +24,13 @@ namespace tests {
         {
             Grid grid(book::f, book::g, N, block_size, eps);
             check_time(grid, 1);
+            grid.save("../results/book.txt");
+        }
+
+        {
+            Grid grid(book::f, book::g, N, block_size, eps);
+            check_time(grid, 4);
+            
         }
 
         {
@@ -44,6 +51,11 @@ namespace tests {
 
         {
             Grid grid(model1::f, model1::g, N, block_size, eps);
+            check_time(grid, 4);
+        }
+
+        {
+            Grid grid(model1::f, model1::g, N, block_size, eps);
             check_time(grid, 8);
         }
     }
@@ -56,5 +68,11 @@ namespace tests {
 
 int main() {
     std::srand(42);
-    tests::run_all_tests(1024, 64, 0.1);
+
+    int N = 1024;
+    double eps = 0.1;
+    for (int block_size = 64; block_size <= 512; block_size *= 2) {
+        std::cout << "Executing tests for block_size=" << block_size << std::endl;
+        tests::run_all_tests(1024, block_size, 0.1);
+    }
 }
