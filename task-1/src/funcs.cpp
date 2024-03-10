@@ -26,7 +26,7 @@ namespace book {
 
 namespace model1 {
     double f(double x, double y) {
-        return 0.0;
+        return 5000.0 / (x * y);
     }
 
     double g(double x, double y) {

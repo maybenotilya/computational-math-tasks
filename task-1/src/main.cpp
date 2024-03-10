@@ -24,7 +24,6 @@ namespace tests {
         {
             Grid grid(book::f, book::g, N, block_size, eps);
             check_time(grid, 1);
-            grid.save("../results/book.txt");
         }
 
         {

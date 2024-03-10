@@ -3,9 +3,9 @@ project(OpenMP-task)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_compile_options(-Wall -Wextra -Wpedantic)
+add_compile_options(-Wall -Wextra -Wpedantic -O3)
 
-add_executable(task-1 main.cpp grid.cpp funcs.cpp algo.cpp)
+add_executable(task-1 src/main.cpp src/grid.cpp src/funcs.cpp src/algo.cpp)
 
 find_package(OpenMP)
 

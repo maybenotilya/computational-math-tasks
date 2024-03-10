@@ -1,5 +1,6 @@
 #include "grid.h"
 #include <cmath>
+#include <iostream>
 #include <omp.h>
 
 double process_block(Grid& grid, int block_i, int block_j) {
