@@ -9,16 +9,16 @@ namespace book {
 
     double g(double x, double y) {
         if (fabs(y) < EPSILON) {
-            return 100 - 200 * x;
+            return 100.0 - 200.0 * x;
         }
         if (fabs(x) < EPSILON) {
-            return 100 - 200 * y;
+            return 100.0 - 200.0 * y;
         }
         if (fabs(y - 1) < EPSILON) {
-            return -100 + 200 * x;
+            return -100.0 + 200.0 * x;
         }
         if (fabs(x - 1) < EPSILON) {
-            return -100 + 200 * y;
+            return -100.0 + 200.0 * y;
         }
         return 0.0;
     }
@@ -30,6 +30,6 @@ namespace model1 {
     }
 
     double g(double x, double y) {
-        return 100*x*x + 200*y*y*y;
+        return 100.0*x*x + 200.0*y*y*y;
     }
 }

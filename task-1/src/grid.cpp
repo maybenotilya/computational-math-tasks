@@ -8,13 +8,13 @@ vector<vector<double>> Grid::init_u(int N, double (*g)(double, double)) {
     vector<vector<double>> u(N + 2, vector<double>(N + 2, 0.0));
     double h = 1.0 / (N + 1);
     for (int i = 0; i <= N + 1; ++i) {
-        u[i][0] = g(h * i, 0);
-        u[i][N + 1] = g(h * i, 1);
+        u[i][0] = g(h * i, 0.0);
+        u[i][N + 1] = g(h * i, 1.0);
     }
 
     for (int j = 0; j <= N + 1; ++j) {
-        u[0][j] = g(0, h * j);
-        u[N + 1][j] = g(1, h * j);
+        u[0][j] = g(0.0, h * j);
+        u[N + 1][j] = g(1.0, h * j);
     }
 
     // for (int i = 1; i < N + 1; ++i) {

@@ -4,7 +4,7 @@
 #include <omp.h>
 
 double process_block(Grid& grid, int block_i, int block_j) {
-    double dmax = 0;
+    double dmax = 0.0;
     int i0 = 1 + block_i * grid.block_size;
     int j0 = 1 + block_j * grid.block_size;
     int i1 = std::min(i0 + grid.block_size, grid.N + 1);
@@ -23,13 +23,13 @@ double process_block(Grid& grid, int block_i, int block_j) {
 
 int process(Grid& grid) {
     int iters = 0;
-    double dmax = 0;
+    double dmax = 0.0;
     int NB = grid.N / grid.block_size + (grid.N % grid.block_size == 0 ? 0 : 1);
-    double* dm = new double[NB]{};
+    double* dm = new double[NB]{0.0};
 
     do {
         ++iters;
-        dmax = 0;
+        dmax = 0.0;
         for (int nx = 0; nx < NB; ++nx) {
             dm[nx] = 0;
             int i;
