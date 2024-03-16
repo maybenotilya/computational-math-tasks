@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 project(OpenMP-task)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 add_compile_options(-Wall -Wextra -Wpedantic -O3)
 
