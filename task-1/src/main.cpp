@@ -24,28 +24,17 @@ private:
     std::vector<int> block_sizes_;
     double eps_;
 
-    static int check_time(Grid& grid, int num_threads = 1) {
+    struct BenchResult {
+        int32_t iters;
+        int64_t time;
+    };
+
+    static BenchResult check_time(Grid& grid, int num_threads = 1) {
         omp_set_num_threads(num_threads);
         auto start = std::chrono::high_resolution_clock::now();
         int iters = process(grid);
         auto end = std::chrono::high_resolution_clock::now();
-        return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-    }
-
-    static int mean_time(std::vector<int> times) {
-        int sum = 0;
-        for (const auto time: times) {
-            sum += time;
-        }
-        return sum / times.size();
-    }
-
-    static int max_time(std::vector<int> times) {
-        return *std::max_element(times.begin(), times.end());
-    }
-
-    static int min_time(std::vector<int> times) {
-        return *std::min_element(times.begin(), times.end());
+        return {iters, std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()};
     }
 
 public:
@@ -56,47 +45,58 @@ public:
         std::vector<int> grid_sizes,
         std::vector<int> block_sizes,
         double eps
-    ) : functions_(functions), nthreads_(nthreads), grid_sizes_(grid_sizes), block_sizes_(block_sizes), eps_(eps) {}
+    ) : 
+    functions_(functions), 
+    nthreads_(nthreads), 
+    grid_sizes_(grid_sizes), 
+    block_sizes_(block_sizes), 
+    eps_(eps) {}
 
-    void run(const char* fname, int nruns = 5) {
-        std::ofstream fout(fname);
-        if (!fout.is_open()) {
-            throw std::runtime_error("Failed to open output file");
-        }
+    void run(int nruns = 5) {
+        std::ofstream fout;
         for (const auto& [name, func_f, func_g] : functions_) {
+            std::string fname = name + ".csv";
+            fout.open(fname);
             std::cout << "Running bench for " << name << std::endl;
-            fout << "Function: " << name << std::endl;
             fout 
-            << "  " 
-            << std::setw(10) << "Nthreads" 
-            << std::setw(10) << "N" 
-            << std::setw(18) << "Block_size" 
-            << std::setw(20) << "Time (mean), ms" 
-            << std::setw(20) << "Time (min), ms" 
-            << std::setw(20) << "Time (max), ms" 
-            << std::endl;
+            << "iterations,"
+            << "nthreads," 
+            << "n,"
+            << "block_size,"
+            << "eps,";
+            for (int i = 0; i < nruns; ++i) {
+                fout << "time_" << i + 1;
+                if (i < nruns - 1) {
+                    fout << ",";
+                }
+            }
+            fout << std::endl;
 
             for (const auto nthread: nthreads_) {
                 for (const auto N: grid_sizes_) {
                     for (const auto block_size: block_sizes_) {
-                        std::vector<int> times;
+                        std::vector<BenchResult> results;
                         for (int i = 0; i < nruns; ++i) {
                             auto grid = Grid(func_f, func_g, N, block_size, eps_);
-                            times.push_back(check_time(grid));
+                            results.push_back(check_time(grid));
                         }
                         fout 
-            << "  " 
-            << std::setw(10) << nthread
-            << std::setw(10) << N
-            << std::setw(18) << block_size
-            << std::setw(20) << mean_time(times) 
-            << std::setw(20) << min_time(times) 
-            << std::setw(20) << max_time(times) 
-            << std::endl;
+                        << results[0].iters << ","
+                        << nthread << "," 
+                        << N << ","
+                        << block_size << ","
+                        << eps_ << ",";
+                        for (int i = 0; i < nruns; ++i) {
+                            fout << results[i].time;
+                            if (i < nruns - 1) {
+                                fout << ",";
+                            }
+                        }
+                        fout << std::endl;
                     }
                 }
             }
-            fout << std::endl;
+            fout.close();
         }
     }
 };
@@ -104,9 +104,12 @@ public:
 int main() {
     std::srand(42);
 
-    std::vector<Function> functions = {{"Book function", book::f, book::g}, {"Model function 1", model1::f, model1::g}};
+    std::vector<Function> functions = {
+        {"Book", book::f, book::g}, 
+        {"Model1", model1::f, model1::g}
+    };
     std::vector<int> nthreads = {1, 4, 8};
-    std::vector<int> grid_sizes = {500};
+    std::vector<int> grid_sizes = {500, 1000};
     std::vector<int> block_sizes = {64};
     double eps = 0.1;
 
@@ -118,5 +121,5 @@ int main() {
         eps
     );
 
-    bench.run("../bench.txt", 5);
+    bench.run(5);
 }
