@@ -22,7 +22,7 @@ private:
     std::vector<int> nthreads_;
     std::vector<int> grid_sizes_;
     std::vector<int> block_sizes_;
-    double eps_;
+    std::vector<double> epss_;
 
     struct BenchResult {
         int32_t iters;
@@ -41,16 +41,16 @@ public:
 
     Benchmark(
         std::vector<Function>& functions,
-        std::vector<int> nthreads,
-        std::vector<int> grid_sizes,
-        std::vector<int> block_sizes,
-        double eps
+        std::vector<int>& nthreads,
+        std::vector<int>& grid_sizes,
+        std::vector<int>& block_sizes,
+        std::vector<double>& epss
     ) : 
     functions_(functions), 
     nthreads_(nthreads), 
     grid_sizes_(grid_sizes), 
     block_sizes_(block_sizes), 
-    eps_(eps) {}
+    epss_(epss) {}
 
     void run(int nruns = 5) {
         std::ofstream fout;
@@ -72,27 +72,29 @@ public:
             }
             fout << std::endl;
 
-            for (const auto nthread: nthreads_) {
-                for (const auto N: grid_sizes_) {
-                    for (const auto block_size: block_sizes_) {
-                        std::vector<BenchResult> results;
-                        for (int i = 0; i < nruns; ++i) {
-                            auto grid = Grid(func_f, func_g, N, block_size, eps_);
-                            results.push_back(check_time(grid));
-                        }
-                        fout 
-                        << results[0].iters << ","
-                        << nthread << "," 
-                        << N << ","
-                        << block_size << ","
-                        << eps_ << ",";
-                        for (int i = 0; i < nruns; ++i) {
-                            fout << results[i].time;
-                            if (i < nruns - 1) {
-                                fout << ",";
+            for (const auto eps: epss_) {
+                for (const auto nthread: nthreads_) {
+                    for (const auto N: grid_sizes_) {
+                        for (const auto block_size: block_sizes_) {
+                            std::vector<BenchResult> results;
+                            for (int i = 0; i < nruns; ++i) {
+                                auto grid = Grid(func_f, func_g, N, block_size, eps);
+                                results.push_back(check_time(grid));
                             }
+                            fout 
+                            << results[0].iters << ","
+                            << nthread << "," 
+                            << N << ","
+                            << block_size << ","
+                            << eps << ",";
+                            for (int i = 0; i < nruns; ++i) {
+                                fout << results[i].time;
+                                if (i < nruns - 1) {
+                                    fout << ",";
+                                }
+                            }
+                            fout << std::endl;
                         }
-                        fout << std::endl;
                     }
                 }
             }
@@ -109,9 +111,9 @@ int main() {
         {"Model1", model1::f, model1::g}
     };
     std::vector<int> nthreads = {1, 4, 8};
-    std::vector<int> grid_sizes = {500, 1000};
+    std::vector<int> grid_sizes = {500};
     std::vector<int> block_sizes = {64};
-    double eps = 0.1;
+    std::vector<double> eps = {0.1};
 
     auto bench = Benchmark(
         functions,
