@@ -29,7 +29,7 @@ private:
         int64_t time;
     };
 
-    static BenchResult check_time(Grid& grid, int num_threads = 1) {
+    static BenchResult check_time(Grid& grid, int num_threads) {
         omp_set_num_threads(num_threads);
         auto start = std::chrono::high_resolution_clock::now();
         int iters = process(grid);
@@ -79,7 +79,7 @@ public:
                             std::vector<BenchResult> results;
                             for (int i = 0; i < nruns; ++i) {
                                 auto grid = Grid(func_f, func_g, N, block_size, eps);
-                                results.push_back(check_time(grid));
+                                results.push_back(check_time(grid, nthread));
                             }
                             fout 
                             << results[0].iters << ","
@@ -110,9 +110,9 @@ int main() {
         {"Book", book::f, book::g}, 
         {"Model1", model1::f, model1::g}
     };
-    std::vector<int> nthreads = {1, 4, 8};
-    std::vector<int> grid_sizes = {500};
-    std::vector<int> block_sizes = {64};
+    std::vector<int> nthreads = {1, 2, 4, 8};
+    std::vector<int> grid_sizes = {1000};
+    std::vector<int> block_sizes = {2, 4, 8, 16, 32, 64};
     std::vector<double> eps = {0.1};
 
     auto bench = Benchmark(
