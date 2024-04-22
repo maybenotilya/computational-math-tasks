@@ -24,7 +24,7 @@ def parse_args():
     parser.add_argument(
         '--compression',
         required=False,
-        type=int,
+        type=float,
         help='Compression ratio. Only used in compress mode'
     )
     parser.add_argument(
