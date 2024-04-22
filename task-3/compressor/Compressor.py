@@ -5,17 +5,17 @@ from PIL import Image
 from typing import Tuple, Dict
 from svd.AbstractSVD import AbstractSVD
 
-INT_SIZE = 4  # Byte size of matrix size meta information to be stored in compressed file
-FLOAT_SIZE = 8  # Byte size of float used to store matrix data
+INT_SIZE = 4
+FLOAT_SIZE = 8
 
 
 class Compressor:
     @staticmethod
-    def _cals_s(original_size: int, N: int, shape: Tuple[int, ...]):
+    def _cals_s(original_size: int, N: float, shape: Tuple[int, ...]):
         n, m = shape
-        size = lambda k: 3 * INT_SIZE + 3 * FLOAT_SIZE * (m * k + k + k * m)
-        l, r = 0, max(n, m)
-        while l + 1 < r:
+        size = lambda k: 3 * INT_SIZE + 3 * FLOAT_SIZE * (n * k + k + k * m)
+        l, r = 0, min(n, m)
+        while r - l > 1:
             mid = (l + r) // 2
             if size(mid) <= int(original_size / N):
                 l = mid
@@ -52,7 +52,6 @@ class Compressor:
 
             matrices[f'V{chan}'] = np.frombuffer(data, offset=offset, dtype=np.float64, count=k * m).reshape((k, m))
             offset += k * m * FLOAT_SIZE
-
         return matrices
 
     @staticmethod
