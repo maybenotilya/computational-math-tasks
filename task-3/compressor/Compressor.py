@@ -4,9 +4,7 @@ from pathlib import Path
 from PIL import Image
 from typing import Tuple, Dict
 from svd.AbstractSVD import AbstractSVD
-
-INT_SIZE = 4
-FLOAT_SIZE = 8
+from constants import INT_SIZE, FLOAT_SIZE
 
 
 class Compressor:

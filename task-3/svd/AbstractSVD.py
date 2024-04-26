@@ -5,5 +5,5 @@ from typing import Tuple
 # A = U @ S @ V
 class AbstractSVD(ABC):
     @abstractmethod
-    def __call__(self, matrix: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    def __call__(self, A: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         ...
