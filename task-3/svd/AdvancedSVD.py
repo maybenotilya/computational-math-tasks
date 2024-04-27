@@ -16,9 +16,10 @@ class AdvancedSVD(AbstractSVD):
         k = min(rows, cols)
 
         V = np.random.normal(0, 1, (cols, rows))
-        err = SVD_TOLERANCE + 1
+        tol = SVD_TOLERANCE
+        err = tol + 1
 
-        while err > SVD_TOLERANCE:
+        while err > tol:
             Q, R = scipy.linalg.qr(A @ V, mode='economic')
             U = Q[:, :k]
             Q, R = scipy.linalg.qr(A.T @ U, mode='economic')
