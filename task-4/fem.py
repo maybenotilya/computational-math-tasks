@@ -282,8 +282,6 @@ if __name__ == '__main__':
         for λ in λs:
             x_knots = np.linspace(0, l, N + 1)
             y_knots = get_y_knots(x_knots, λ, N)
-            if λ == 4:
-                plot_solution(x_knots, y_knots, λ, f'./plots/N{N}_λ{λ}.png')
             err = compute_error(x_knots, y_knots, λ)
             h = x_knots[1] - x_knots[0]
             estimate = estimate_error(λ, h, l, x_knots, y_knots)
